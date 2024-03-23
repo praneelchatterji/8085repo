@@ -1,1 +1,113 @@
+class Registers{
+    private
+    var A:Short = 0
+    var B:Short = 0; var C:Short = 0
+    var D:Short = 0; var E:Short = 0
+    var H:Short = 0; var L:Short = 0
 
+    var flagRegister:Short = 0
+    var programCounter:Short = 0
+    var stackPointer:Short = 0
+
+    fun reset(registerName:String)
+    {
+        when(registerName)
+        {
+            "A"-> A=0
+            "B"-> B=0
+            "C"-> C=0
+            "D"-> D=0
+            "E"-> E=0
+            "H"-> H=0
+            "L"-> L=0
+
+            "flagRegister"-> flagRegister=0
+            "programCounter"-> programCounter=0
+            "stackPointer"-> stackPointer=0
+            else -> throw IllegalArgumentException("Invalid register name: $registerName");
+        }
+    }
+
+    fun set(registerName: String, value: Short) {
+        when(registerName) {
+            "A" -> A = value
+            "B" -> B = value
+            "C" -> C = value
+            "D" -> D = value
+            "E" -> E = value
+            "H" -> H = value
+            "L" -> L = value
+            else -> throw IllegalArgumentException("Invalid register name: $registerName")
+        }
+    }
+
+
+    fun printRegisters() {
+        println("A: $A")
+        println("B: $B   C: $C")
+        println("D: $D   E: $E")
+        println("H: $H   L: $L")
+        println("Flag Register: $flagRegister")
+        println("Program Counter: $programCounter")
+        println("Stack Pointer: $stackPointer")
+
+    }
+
+
+}
+fun identifyInstruction(str:String):String?//identifies instruction
+{
+    var instruction:String?="";//instruction is segregated
+    for(i in 0..str.length-1 step 1)
+    {
+        if(str[i]!=' ')
+            instruction += str[i];
+        else
+            break;
+    }
+    return instruction;
+}
+var register:Registers=Registers();//class Object Instance Created
+
+class DTInstructions{//DATA TRANSFER INSTRUCTIONS' CLASS
+
+    fun MVI(line: String)
+    {
+        var registerName:String=""
+        var value:Short= 0
+        for (i in 0..line.length-1 step 1)
+        {
+            if(line[i]==',')
+            {
+                registerName="${line[i-1]}"
+                val values="${line[i+1]}${line[i+2]}"
+                value=values.toShort();
+            }
+
+        }
+        register.set(registerName,value)
+    }
+
+}
+
+
+fun executeInstruction(line:String){
+    val DTI=DTInstructions()
+    var instruction=identifyInstruction(line);
+    when (instruction){
+        "MVI"-> DTI.MVI(line);
+    }
+
+}
+fun main() {
+    var Str:String = "MVI A,01"
+
+    executeInstruction(Str);
+    Str="MVI B,33"
+    executeInstruction(Str);
+    register.printRegisters();
+
+
+
+    println();
+}
